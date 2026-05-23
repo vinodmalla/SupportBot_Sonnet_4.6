@@ -122,5 +122,5 @@ Using `messages` directly after `setMessages` returned the old array because sta
 
 **Malla Vinodkumar**  
 Full Stack Developer · MERN Stack · 2.6 years @ HCL Technologies  
-📧 your-email@gmail.com  
-🔗 [LinkedIn](#) · [GitHub](#)
+📧 mallavinod95@gmail.com  
+
