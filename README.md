@@ -1,70 +1,126 @@
-# Getting Started with Create React App
+# 🤖 Aura — AI Customer Support Bot
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> **Take-Home Assessment · Full Stack Engineer (New Grad)**  
+> Built with React · Claude API · Claude.ai Artifact
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🔗 Links
 
-### `npm start`
+| | |
+|---|---|
+| 🌐 **Live Artifact** | [https://claude.ai/public/artifacts/affe1176-5058-4757-8d0f-91d9400352ee](#)  |
+| 📹 **Walkthrough Video** | [https://www.loom.com/share/9f469b524118407282e82f0ce29a11cb](#)  |
+| 💻 **GitHub Repo** | [https://github.com/vinodmalla/SupportBot_Sonnet_4.6](#) |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📌 What I Built
 
-### `npm test`
+**Aura** is an AI-powered customer support concierge for a fictional digital bank — **Instincts Bank Ltd**.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Users can chat with Aura to ask questions about account fees, savings rates, card management, transfers, and security. The bot is strictly scoped to banking topics only — it politely refuses anything unrelated and escalates to human support when needed.
 
-### `npm run build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ✨ Features
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+| Feature | Details |
+|---|---|
+| 💬 Real AI chat | Live API calls to `claude-sonnet-4-20250514` via `fetch` |
+| 🧠 Conversation memory | Full message history sent with every API request |
+| 🏦 Bot persona | Aura — concierge for Instincts Bank Ltd with a strict system prompt |
+| ⚡ Quick reply chips | One-tap shortcuts for 4 common questions |
+| 👤 Human escalation | "Talk to an Expert" shows contact info card |
+| 🔄 New chat / reset | Clears session and resets to empty state |
+| ⏳ Loading state | Animated bouncing dots while waiting for response |
+| ❌ Error handling | Visible red error banner — no silent failures |
+| 💾 Session persistence | Messages saved to `sessionStorage` — survives page refresh |
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🛠️ Tech Stack
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- **React** — functional components with hooks (`useState`, `useEffect`, `useRef`)
+- **Anthropic Claude API** — `claude-sonnet-4-20250514`
+- **Custom CSS** with CSS variables for theming (no Tailwind dependency)
+- **DM Serif Display + DM Sans** — Google Fonts for premium banking aesthetic
+- **Lucide React** — icons
+- **sessionStorage** — client-side message persistence
+- **Claude.ai Artifact** — zero-backend deployment
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🏗️ Architecture & Key Decisions
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 1. State Storage — `sessionStorage`
+Plain React state resets on every page refresh. `sessionStorage` persists the conversation for the lifetime of the browser tab — so refreshing doesn't wipe the chat. It clears automatically when the tab closes, which is appropriate for a support session (no stale data).
 
-## Learn More
+### 2. Conversation Memory — Full history per request
+Claude has no memory between API calls. I send the entire `messages` array with every request so the bot remembers what was said earlier in the conversation. This is the standard multi-turn pattern for LLM-based chat.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 3. Browser API Header
+Direct browser-to-API calls to Anthropic require this header:
+```
+anthropic-dangerous-direct-browser-access: true
+```
+Without it, the browser blocks the request at the CORS level and no response is returned.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4. Separation of `sendMessage` and `handleChip`
+Both functions call the same `callAPI` helper but are kept separate because chips auto-submit without needing the input field, while `sendMessage` reads from the input state. Sharing `callAPI` avoids duplicating the fetch logic.
 
-### Code Splitting
+### 5. Local `updated` variable instead of reading state
+After adding the user message, I use a local `updated` variable to call the API — not the `messages` state — because React state updates are asynchronous. Reading `messages` right after `setMessages` would return the old array.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```js
+const updated = [...messages, userMsg];
+setMessages(updated);       // updates UI
+callAPI(updated);           // uses local var, not stale state
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 📁 Project Structure
 
-### Making a Progressive Web App
+```
+AuraConcierge.jsx
+├── SYSTEM_PROMPT        — Bot identity, knowledge base, strict rules
+├── QUICK_REPLIES        — 4 chip shortcut questions
+└── SupportBot()         — Main component
+    ├── callAPI()        — fetch wrapper for Anthropic API
+    ├── sendMessage()    — handles input field submit
+    ├── handleChip()     — handles quick reply chip click
+    └── handleNewChat()  — clears session and resets all state
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## ⚠️ Challenges Faced
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+**1. Silent API failures**  
+First version showed nothing when the API call failed. Fixed by wrapping `callAPI` in `try/catch` and rendering a visible error banner so the user always knows something went wrong.
 
-### Deployment
+**2. Browser blocking the Anthropic API**  
+All requests were failing silently due to a missing CORS header. Adding `anthropic-dangerous-direct-browser-access: true` to every fetch call fixed it.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+**3. Stale state in async functions**  
+Using `messages` directly after `setMessages` returned the old array because state updates are batched. Fixed by storing the updated array in a local variable and passing that to both `setMessages` and `callAPI`.
 
-### `npm run build` fails to minify
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🚀 What I'd Improve With More Time
+
+- **Streaming responses** — Show tokens as they arrive instead of waiting for the full reply
+- **Markdown rendering** — Parse `**bold**`, `- bullets`, and `## headings` from Claude's response into proper HTML
+- **localStorage persistence** — Keep conversation history even after the tab closes
+- **Accessibility** — ARIA labels, keyboard navigation, screen reader support
+- **Unit tests** — Cover the API error paths and state management logic
+
+
+
+## 👨‍💻 Author
+
+**Malla Vinodkumar**  
+Full Stack Developer · MERN Stack · 2.6 years @ HCL Technologies  
+📧 your-email@gmail.com  
+🔗 [LinkedIn](#) · [GitHub](#)
