@@ -112,7 +112,6 @@ Using `messages` directly after `setMessages` returned the old array because sta
 
 - **Streaming responses** — Show tokens as they arrive instead of waiting for the full reply
 - **Markdown rendering** — Parse `**bold**`, `- bullets`, and `## headings` from Claude's response into proper HTML
-- **localStorage persistence** — Keep conversation history even after the tab closes
 - **Accessibility** — ARIA labels, keyboard navigation, screen reader support
 - **Unit tests** — Cover the API error paths and state management logic
 
